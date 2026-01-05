@@ -16,27 +16,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
+//
 const corsOptions = {
-    origin: 'https://hyperrealityweb.netlify.app/', // Only allow this domain
-    methods: ['POST'],                          // Only allow POST requests
+    origin: '*', // The asterisk means "Allow All"
+    methods: ['GET', 'POST', 'OPTIONS'], // Added OPTIONS for preflight requests
     optionsSuccessStatus: 200 
-};
+};  
 
 // Apply CORS to all routes
 app.use(cors(corsOptions));
-
-const checkHost = (req, res, next) => {
-    const allowedHost = 'https://hyperrealityweb.netlify.app/'; 
-    
-    // req.headers.host includes the port (e.g., localhost:3000)
-    // req.hostname is just the domain
-    if (req.headers.host === allowedHost) {
-        next(); // Host matches, proceed to the route handler
-    } else {
-        res.status(403).send("Access Denied: Invalid Host");
-    }
-};
 
 // 2. Define the Send Route
 app.post('/send-email' ,(req, res) => {
