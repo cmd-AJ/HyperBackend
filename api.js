@@ -23,11 +23,23 @@ const corsOptions = {
     optionsSuccessStatus: 200 
 };  
 
+
+const verifyToken = (req, res, next) => {
+    const userToken = req.headers['x-api-key']; // Look for 'x-api-key' in headers
+    const secretToken = process.env.API_SECRET_TOKEN;
+
+    if (userToken && userToken === secretToken) {
+        next(); // Token matches! Proceed to send email
+    } else {
+        res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+    }
+};
+
 // Apply CORS to all routes
 app.use(cors(corsOptions));
 
 // 2. Define the Send Route
-app.post('/send-email' ,(req, res) => {
+app.post('/send-email', verifyToken ,(req, res) => {
     const { to, subject, text } = req.body;
 
     const mailOptions = {
